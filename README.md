@@ -13,4 +13,4 @@ Model viewer for Thingiverse
 2. Click here: [thingiview.user.js](https://github.com/czkz/thingiview/raw/master/thingiview.user.js), press "Confirm installation".
 3. Go to Thingiverse, click on a file's thumbnail to open/close the preview.
 
-![Preview](preview.png)
+![Preview](preview.gif)
