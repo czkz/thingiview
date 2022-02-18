@@ -4,6 +4,7 @@
 // @match       https://www.thingiverse.com/*
 // @version     1.3
 // @run-at      document-end
+// @require     https://cdn.jsdelivr.net/npm/p5
 // @noframes
 // @description Press on the image to the left of a "Download" button to open an interactive 3d preview
 // @author      czkz
@@ -21,26 +22,7 @@ const c_modelColor = [9, 106, 191];   // [grayscale] or [r, g, b] or ['red'] or 
 const c_bottomPadding = 1/8;          // Fraction of sketch height to add as an empty space after the sketch
 
 
-function main() {
-  console.log('Entered thingiview main()');
-  injectScript('https://cdn.jsdelivr.net/npm/p5').then(function() {  // Load p5.js
-    setInterval(makeButtons, 500);
-  });
-}
-main();
-
-
-function injectScript(src) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.addEventListener('load', resolve);
-    script.addEventListener('error', e => reject(e.error));
-    document.head.appendChild(script);
-  });
-}
-
-function makeButtons() {
+setInterval(function makeButtons() {
   document.querySelectorAll('div[class^=ThingFilesList__fileList]>div[class^=ThingFile__fileRow]').forEach((e, i) => {
     if (e.classList.contains('injectedPreviewBtn')) {
       return;
@@ -140,4 +122,4 @@ function makeButtons() {
       }, container);
     }
   });
-}
+}, 500);
