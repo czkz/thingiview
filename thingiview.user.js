@@ -33,7 +33,7 @@ setInterval(function makeButtons() {
         lnk.onclick = (e) => e.preventDefault();
         img.before(lnk);
         lnk.append(img);
-        lnk.href = '';
+        lnk.href = '#';
         let thingInfo = JSON.parse(JSON.parse(localStorage["persist:root"]).currentThing).thing.files[i];
         let container = document.createElement('div');
 
@@ -44,7 +44,6 @@ setInterval(function makeButtons() {
         img.onclick = function() {
             img.onclick = function() { container.hidden = !container.hidden; }
             e.after(container);
-            console.log('creating p5 sketch...');
             new p5(function sketchLogic(p) {
                 let mdl;
                 let canvas;
@@ -63,7 +62,6 @@ setInterval(function makeButtons() {
                 }
 
                 p.setup = function () {
-                    console.log('swh', sketchW, sketchH);
                     if (mdl.vertices.length == 0) {
                         onLoadModelFail();
                         p.draw = () => {};
@@ -98,8 +96,8 @@ setInterval(function makeButtons() {
                     } else {
                         p.ambientMaterial(...c_modelColor);
                         p.ambientLight(100);
-                        //                    ( r,     g,     b,        x,        y,     z )
-                        p.pointLight(255, 255, 255, -150, -75,    200);
+                        //          ( r,   g,   b,    x,    y,   z )
+                        p.pointLight(255, 255, 255, -150, -75,  200);
                         p.pointLight(255, 255, 255, +150, +150, 200);
                     }
                     p.model(mdl);
