@@ -7,6 +7,8 @@
 // @run-at      document-end
 // @noframes
 // @description Press on the image to the left of a "Download" button to open an interactive 3d preview
+// @homepageURL https://github.com/czkz/thingiview
+// @downloadURL https://github.com/czkz/thingiview/raw/master/thingiview.user.js
 // ==/UserScript==
 
 'use strict';
