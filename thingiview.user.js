@@ -27,7 +27,7 @@ const c_bottomPadding = 1/8;          // Fraction of sketch height to add as an 
 function main() {
   console.log('Entered thingiview main()');
   unsafeWindow.fetch = root_fetch;
-  injectScript('https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js').then(function() {  // Load p5.js
+  injectScript('https://cdn.jsdelivr.net/npm/p5').then(function() {  // Load p5.js
     setInterval(makeButtons, 500);
   });
 }
