@@ -53,12 +53,17 @@ setInterval(function makeButtons() {
                 let camY = 0;
 
                 p.preload = function () {
-                    mdl = p.loadModel(thingInfo.direct_url, true, () => {}, onLoadModelFail, thingInfo.name);
+                    try {
+                        mdl = p.loadModel(thingInfo.direct_url, true, () => {}, onLoadModelFail, thingInfo.name);
+                    } catch(e) {
+                        onLoadModelFail(e);
+                    }
                 }
 
                 function onLoadModelFail(e) {
                     container.innerHTML = '<h1>:(</h1>';
                     container.style = 'text-align:center';
+                    console.log('Error when loading model:', e);
                 }
 
                 p.setup = function () {
