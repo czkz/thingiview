@@ -1,8 +1,6 @@
 // ==UserScript==
 // @name        Thingiview
 // @match       https://www.thingiverse.com/*
-// @grant       GM_xmlhttpRequest
-// @connect     cdn.thingiverse.com
 // @version     1.3
 // @run-at      document-end
 // @noframes
@@ -21,14 +19,8 @@ const c_modelColor = [9, 106, 191];   // [grayscale] or [r, g, b] or ['red'] or 
 const c_bottomPadding = 1/8;          // Fraction of sketch height to add as an empty space after the sketch
 
 
-// cdn.thingiverse.com is not configured
-// to be accessible from www.thingiverse.com (but should've been),
-// so the browser blocks fetch() because of CORS.
-// p5.js uses fetch() to load stl files from cdn.thingiverse.com.
-// That's why we have to use Greasemonkey's GM_xmlhttpRequest() wrapped in root_fetch() to bypass CORS.
 function main() {
   console.log('Entered thingiview main()');
-  unsafeWindow.fetch = root_fetch;
   injectScript('https://cdn.jsdelivr.net/npm/p5').then(function() {  // Load p5.js
     setInterval(makeButtons, 500);
   });
@@ -147,91 +139,3 @@ function makeButtons() {
     }
   });
 }
-
-
-// Used in root_fetch
-function parseHeaders(rawHeaders) {
-  const lines = rawHeaders.split(/\s*\r\n\s*/);
-  let headers = {};
-  for (const e of lines) {
-    let a = e.split(':');
-    headers[a.shift().trim()] = a.join(':').trim();
-  }
-  return headers;
-}
-
-// Fetch polyfill that bypasses CORS
-function root_fetch(resource, init) {
-  init = init || {};
-  console.log('root_fetch called');
-  return new Promise((resolve, reject) => {
-    if (typeof(resource) === 'string') {
-      init.url = resource;
-    } else {
-      init = { ...resource, ...init };
-      init.url = resource.url;
-    }
-    init.method = init.method || 'GET';
-    init.responseType = 'blob';
-
-    init.onload = function(respobj) {
-
-      function makeResponse() {
-        let headers_obj = parseHeaders(respobj.responseHeaders || '');
-        console.log('response is of type', typeof(respobj.response));
-        return {
-          ok: (respobj.status/100|0) == 2,  // 200-299
-          statusText: respobj.statusText,
-          status: respobj.status,
-          url: respobj.finalUrl,
-          text: () => Promise.resolve(respobj.responseText),
-          json: () => Promise.resolve(respobj.responseText).then(JSON.parse),
-          blob: () => Promise.resolve(respobj.response),
-          arrayBuffer: () => Promise.resolve(respobj.response.arrayBuffer()),
-          clone: makeResponse,
-          headers: {
-            keys: () => Object.keys(headers_obj),
-            entries: () => Object.entries(headers_obj),
-            get: n => headers_obj[n.toLowerCase()],
-            has: n => n.toLowerCase() in headers_obj
-          }
-        };
-      }
-
-      let ret = makeResponse();
-      //let ret = new Response(respobj.response, makeResponse(respobj));
-      console.log('root_fetch will return...');
-      console.log(ret);
-      console.log('with response.text()...');
-      console.log(ret.text());
-      return resolve(ret);
-    }
-
-    init.onerror = init.ontimeout = function() {
-      setTimeout(function() {
-        reject(new TypeError('Network request failed'))
-      }, 0)
-    }
-
-    init.onabort = function() {
-      setTimeout(function() {
-        reject(new DOMException('Aborted', 'AbortError'))
-      }, 0)
-    }
-
-    // Remove entries which GM_xmlhttpRequest doesn't understand
-    for (const i in init) {
-      if (!['url','method','user','password','overrideMimeType','headers','responseType','timeout','data','binary','context','anonymous',
-        'onabort','onerror','onload','onloadend','onloadstart','onprogress','onreadystatechange','ontimeout'
-      ].includes(i)) {
-        delete init[i];
-        console.log('root_fetch found an illegal arg: ' + i);
-      }
-    }
-
-    console.log('root_fetch will send...');
-    console.log(init);
-    GM_xmlhttpRequest(init);
-  })
-}
-root_fetch.polyfill = 'root_fetch';
