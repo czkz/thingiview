@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name        Thingiview
+// @namespace   https://github.com/czkz
 // @match       https://www.thingiverse.com/*
 // @version     1.3
 // @run-at      document-end
 // @noframes
 // @description Press on the image to the left of a "Download" button to open an interactive 3d preview
+// @author      czkz
 // @homepageURL https://github.com/czkz/thingiview
 // @downloadURL https://github.com/czkz/thingiview/raw/master/thingiview.user.js
 // ==/UserScript==
