@@ -3,7 +3,7 @@
 // @match       https://www.thingiverse.com/*
 // @grant       GM_xmlhttpRequest
 // @connect     cdn.thingiverse.com
-// @version     1.2
+// @version     1.3
 // @run-at      document-end
 // @noframes
 // @description Press on the image to the left of a "Download" button to open an interactive 3d preview
@@ -45,19 +45,18 @@ function injectScript(src) {
 }
 
 function makeButtons() {
-  document.querySelectorAll('div[class^=ThingFilesList__fileList]>div[class^=ThingFile__fileRow]').forEach(e => {
+  document.querySelectorAll('div[class^=ThingFilesList__fileList]>div[class^=ThingFile__fileRow]').forEach((e, i) => {
     if (e.classList.contains('injectedPreviewBtn')) {
       return;
     }
     e.classList.add('injectedPreviewBtn');
-    let download_btn = e.querySelector('a[class^=ThingFile__download]');
     let img = e.querySelector('img') || e.querySelector('div[class^=ThingFile__fileExtentionBody]');
     let lnk = document.createElement('a');
     lnk.onclick = (e) => e.preventDefault();
     img.before(lnk);
     lnk.append(img);
     lnk.href = '';
-    let filename = e.querySelector('div[class^=ThingFile__fileName]').getAttribute('title');
+    let thingInfo = JSON.parse(JSON.parse(localStorage["persist:root"]).currentThing).thing.files[i];
     let container = document.createElement('div');
 
     let sketchW = e.offsetWidth;
@@ -77,7 +76,7 @@ function makeButtons() {
         let camY = 0;
 
         p.preload = function () {
-          mdl = p.loadModel(download_btn.href, true, () => {}, onLoadModelFail, filename);
+          mdl = p.loadModel(thingInfo.direct_url, true, () => {}, onLoadModelFail, thingInfo.name);
         }
 
         function onLoadModelFail(e) {
@@ -234,4 +233,3 @@ function root_fetch(resource, init) {
   })
 }
 root_fetch.polyfill = 'root_fetch';
-
