@@ -23,7 +23,7 @@ const c_bottomPadding = 1/8;          // Fraction of sketch height to add as an 
 
 
 setInterval(function makeButtons() {
-    document.querySelectorAll('div[class^=ThingFilesList__fileList]>div[class^=ThingFile__fileRow]').forEach((e, i) => {
+    document.querySelectorAll('div[class^=ItemList__listItem--x6rvg]').forEach((e, i) => {
         if (e.classList.contains('injectedPreviewBtn')) {
             return;
         }
